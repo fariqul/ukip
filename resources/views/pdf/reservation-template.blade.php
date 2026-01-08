@@ -97,7 +97,12 @@
 </head>
 <body>
     <div class="header">
-        <img src="{{ public_path('logo.png') }}" alt="Logo" style="height: 50px; margin-bottom: 10px;">
+        @php
+            $logoPath = public_path('logo.png');
+        @endphp
+        @if(file_exists($logoPath))
+            <img src="{{ $logoPath }}" alt="Logo" style="height: 50px; margin-bottom: 10px;">
+        @endif
         <h1>Formulir Reservasi Perpustakaan</h1>
         <p>Perpustakaan Keliling & Gedung</p>
         <p style="font-size: 10px; margin-top: 8px;">Panduan Pengisian Formulir Reservasi</p>

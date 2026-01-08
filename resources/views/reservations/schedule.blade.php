@@ -508,7 +508,42 @@
                             </div>
                         </div>
                         
-                        @if($reservation->start_time)
+                        {{-- Always show FCFS info for confirmed reservations --}}
+                        @if($reservation->status === 'confirmed')
+                            @php
+                                // Calculate queue position if not set
+                                $queuePosition = $reservation->queue_position;
+                                if (!$queuePosition) {
+                                    $queuePosition = \App\Models\Reservation::where('reservation_date', $reservation->reservation_date)
+                                        ->where('status', 'confirmed')
+                                        ->where(function($q) use ($reservation) {
+                                            $q->where('visit_time', '<', $reservation->visit_time)
+                                              ->orWhere(function($q2) use ($reservation) {
+                                                  $q2->where('visit_time', $reservation->visit_time)
+                                                     ->where('id', '<=', $reservation->id);
+                                              });
+                                        })
+                                        ->count();
+                                }
+                                
+                                // Calculate waiting time if not set
+                                $waitingTime = $reservation->waiting_time ?? 0;
+                                if (!$waitingTime && $reservation->visit_time) {
+                                    // Calculate based on queue position and standard duration
+                                    $standardDuration = $reservation->duration_minutes ?? 120;
+                                    $waitingTime = ($queuePosition - 1) * $standardDuration;
+                                }
+                                
+                                // Calculate TAT (Turnaround Time)
+                                $tat = $reservation->turnaround_time ?? ($waitingTime + ($reservation->duration_minutes ?? 120));
+                                
+                                // Get start time
+                                $startTime = $reservation->start_time 
+                                    ? \Carbon\Carbon::parse($reservation->start_time)->format('H:i')
+                                    : ($reservation->visit_time 
+                                        ? \Carbon\Carbon::parse($reservation->visit_time)->format('H:i') 
+                                        : '-');
+                            @endphp
                             <div class="fcfs-metrics">
                                 <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
@@ -520,19 +555,19 @@
                                 <div class="fcfs-grid">
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Posisi #</div>
-                                        <div class="fcfs-value">{{ $reservation->queue_position ?? '-' }}</div>
+                                        <div class="fcfs-value">{{ $queuePosition ?: '-' }}</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Waktu Tunggu</div>
-                                        <div class="fcfs-value">{{ $reservation->waiting_time ?? 0 }}m</div>
+                                        <div class="fcfs-value">{{ $waitingTime }}m</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">TAT</div>
-                                        <div class="fcfs-value">{{ $reservation->turnaround_time ?? 0 }}m</div>
+                                        <div class="fcfs-value">{{ $tat }}m</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Mulai Layanan</div>
-                                        <div class="fcfs-value" style="font-size: 14px;">{{ \Carbon\Carbon::parse($reservation->start_time)->format('H:i') }}</div>
+                                        <div class="fcfs-value" style="font-size: 14px;">{{ $startTime }}</div>
                                     </div>
                                 </div>
                             </div>
