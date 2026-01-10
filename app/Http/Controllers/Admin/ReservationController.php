@@ -59,8 +59,8 @@ class ReservationController extends Controller
         
         $reservation->save();
 
-        // Trigger FCFS processing when status changes to confirmed
-        if ($newStatus === 'confirmed' && $oldStatus !== 'confirmed') {
+        // Trigger FCFS processing whenever status is confirmed
+        if ($newStatus === 'confirmed') {
             try {
                 $fcfsScheduler = new \App\Services\FCFSScheduler();
                 $fcfsScheduler->processQueue($reservation->reservation_date);
