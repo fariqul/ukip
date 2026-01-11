@@ -16,13 +16,40 @@ $app->make('Illuminate\Contracts\Console\Kernel')->bootstrap();
 use App\Models\Reservation;
 use App\Services\FCFSScheduler;
 use Carbon\Carbon;
+use Illuminate\Support\Facades\Schema;
 
 echo "╔════════════════════════════════════════════════════════════════╗\n";
 echo "║              Fix FCFS Metrics untuk Reservasi Lama           ║\n";
 echo "╚════════════════════════════════════════════════════════════════╝\n\n";
 
+// 0. Cek apakah kolom FCFS sudah ada di database
+echo "📌 Langkah 0: Cek kolom FCFS di database...\n";
+
+$requiredColumns = ['arrival_time', 'burst_time', 'start_time', 'completion_time', 'waiting_time', 'turnaround_time', 'queue_position'];
+$missingColumns = [];
+
+foreach ($requiredColumns as $column) {
+    if (!Schema::hasColumn('reservations', $column)) {
+        $missingColumns[] = $column;
+    }
+}
+
+if (count($missingColumns) > 0) {
+    echo "   ⚠️  Kolom berikut belum ada di tabel reservations:\n";
+    foreach ($missingColumns as $col) {
+        echo "      - {$col}\n";
+    }
+    echo "\n   🔧 Jalankan migration terlebih dahulu:\n";
+    echo "      php artisan migrate\n\n";
+    echo "   Atau jalankan migration spesifik:\n";
+    echo "      php artisan migrate --path=database/migrations/2026_01_11_000001_add_fcfs_columns_to_reservations_table.php\n\n";
+    exit(1);
+}
+
+echo "   ✓ Semua kolom FCFS sudah ada di database\n";
+
 // 1. Fix reservasi yang tidak punya arrival_time
-echo "📌 Langkah 1: Cek reservasi tanpa arrival_time...\n";
+echo "\n📌 Langkah 1: Cek reservasi tanpa arrival_time...\n";
 
 $noArrivalTime = Reservation::whereNull('arrival_time')->get();
 
