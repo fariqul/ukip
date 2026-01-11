@@ -52,6 +52,11 @@
         border-left-color: #10b981;
     }
     
+    .reservation-card.completed {
+        border-left-color: #3b82f6;
+        background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+    }
+    
     .reservation-card.rejected {
         border-left-color: #ef4444;
     }
@@ -90,6 +95,11 @@
     .status-badge.confirmed {
         background: #d1fae5;
         color: #059669;
+    }
+    
+    .status-badge.completed {
+        background: #dbeafe;
+        color: #2563eb;
     }
     
     .status-badge.rejected {
@@ -286,12 +296,26 @@
         </div>
     @else
         @foreach($reservations as $reservation)
-            <div class="reservation-card {{ $reservation->status }}">
+            @php
+                // Cek apakah reservasi sudah selesai (confirmed + waktu sudah lewat)
+                $isCompleted = false;
+                if ($reservation->status === 'confirmed' && $reservation->reservation_date && $reservation->end_time) {
+                    $endDateTime = \Carbon\Carbon::parse($reservation->reservation_date->format('Y-m-d') . ' ' . $reservation->end_time);
+                    $isCompleted = $endDateTime->isPast();
+                } elseif ($reservation->status === 'confirmed' && $reservation->reservation_date) {
+                    // Fallback: jika tidak ada end_time, cek apakah tanggal sudah lewat
+                    $isCompleted = $reservation->reservation_date->endOfDay()->isPast();
+                }
+                $cardClass = $isCompleted ? 'completed' : $reservation->status;
+            @endphp
+            <div class="reservation-card {{ $cardClass }}">
                 <div class="card-header">
                     <h3 class="card-title">{{ $reservation->occupation }}</h3>
-                    <span class="status-badge {{ $reservation->status }}">
+                    <span class="status-badge {{ $cardClass }}">
                         @if($reservation->status === 'pending')
                             ⏳ Menunggu Persetujuan
+                        @elseif($reservation->status === 'confirmed' && $isCompleted)
+                            ✅ Selesai
                         @elseif($reservation->status === 'confirmed')
                             ✅ Disetujui
                         @else

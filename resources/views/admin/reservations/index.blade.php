@@ -72,8 +72,22 @@
                         @endif
                     </td>
                     <td class="px-3 py-2">
+                        @php
+                            // Cek apakah reservasi sudah selesai (confirmed + waktu sudah lewat)
+                            $isCompleted = false;
+                            if ($r->status === 'confirmed' && $r->reservation_date && $r->end_time) {
+                                $endDateTime = \Carbon\Carbon::parse($r->reservation_date->format('Y-m-d') . ' ' . $r->end_time);
+                                $isCompleted = $endDateTime->isPast();
+                            } elseif ($r->status === 'confirmed' && $r->reservation_date) {
+                                // Fallback: jika tidak ada end_time, cek apakah tanggal sudah lewat
+                                $isCompleted = $r->reservation_date->endOfDay()->isPast();
+                            }
+                        @endphp
+                        
                         @if ($r->status === 'pending')
                             <span class="text-orange-600 font-semibold">⏳ Menunggu</span>
+                        @elseif ($r->status === 'confirmed' && $isCompleted)
+                            <span class="text-blue-600 font-semibold">✅ Selesai</span>
                         @elseif ($r->status === 'confirmed')
                             <span class="text-green-600 font-semibold">✓ Diterima</span>
                         @else
@@ -84,7 +98,7 @@
                         @endif
                     </td>
                     <td class="px-3 py-2">
-                        @if ($r->status === 'pending' || $r->status === 'confirmed')
+                        @if ($r->status === 'pending' || ($r->status === 'confirmed' && !$isCompleted))
                         <form method="POST" action="{{ route('admin.reservations.updateStatus', $r) }}" class="reservation-form" id="form-{{ $r->id }}">
                             @csrf
                             <div class="flex flex-col gap-2">
@@ -105,6 +119,8 @@
                                 <button type="submit" class="btn bg-blue-600" style="padding: 6px 12px; font-size: 12px;">Update</button>
                             </div>
                         </form>
+                        @elseif ($r->status === 'confirmed' && $isCompleted)
+                            <span class="text-blue-600 text-sm">✅ Selesai</span>
                         @else
                             <span class="text-gray-500">-</span>
                         @endif
