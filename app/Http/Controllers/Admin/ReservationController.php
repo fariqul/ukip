@@ -57,6 +57,17 @@ class ReservationController extends Controller
             }
         }
         
+        // Set arrival_time jika belum ada (untuk reservasi lama sebelum fitur FCFS)
+        if (!$reservation->arrival_time) {
+            $reservation->arrival_time = $reservation->created_at ?? now();
+            Log::info("Set arrival_time for reservation #{$reservation->id} (legacy data)");
+        }
+        
+        // Set burst_time jika belum ada
+        if (!$reservation->burst_time) {
+            $reservation->burst_time = $reservation->duration_minutes ?? 120;
+        }
+        
         $reservation->save();
 
         // Trigger FCFS processing whenever status is confirmed
@@ -64,6 +75,10 @@ class ReservationController extends Controller
             try {
                 $fcfsScheduler = new \App\Services\FCFSScheduler();
                 $fcfsScheduler->processQueue($reservation->reservation_date);
+                
+                // Reload reservation untuk mendapatkan FCFS metrics yang baru dihitung
+                $reservation->refresh();
+                
                 Log::info("FCFS queue processed for date: {$reservation->reservation_date}");
             } catch (\Exception $e) {
                 Log::error("FCFS processing failed: " . $e->getMessage());
