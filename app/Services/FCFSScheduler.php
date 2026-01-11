@@ -22,10 +22,11 @@ class FCFSScheduler
         Log::info("Processing FCFS queue for date: {$date}");
         
         // Get all pending or confirmed reservations for this date
-        // Include reservations without arrival_time for backward compatibility
+        // Order by arrival_time, fallback to id (older records have lower id)
         $reservations = Reservation::where('reservation_date', $date)
             ->whereIn('status', ['pending', 'confirmed'])
-            ->orderByRaw('COALESCE(arrival_time, created_at, NOW()) ASC')
+            ->orderByRaw('COALESCE(arrival_time, NOW()) ASC')
+            ->orderBy('id', 'asc')
             ->get();
         
         if ($reservations->isEmpty()) {
@@ -97,10 +98,10 @@ class FCFSScheduler
     public function calculateTimes(Reservation $reservation, $previousCompletionTime = null)
     {
         // AT = Arrival Time (when request was submitted)
-        // Fallback to created_at or now() for legacy reservations without arrival_time
+        // Fallback to reservation_date start of day for legacy reservations without arrival_time
         $arrivalTime = $reservation->arrival_time 
             ? Carbon::parse($reservation->arrival_time)
-            : ($reservation->created_at ? Carbon::parse($reservation->created_at) : Carbon::now());
+            : Carbon::parse($reservation->reservation_date)->startOfDay();
         
         // Set arrival_time if it was null (for legacy data)
         if (!$reservation->arrival_time) {
