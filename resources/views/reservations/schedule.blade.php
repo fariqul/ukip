@@ -11,13 +11,13 @@
     }
     
     .page-header {
-        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        background: linear-gradient(135deg, #0693E3 0%, #1e3a5f 100%);
         color: white;
         padding: 50px 30px;
         border-radius: 20px;
         margin-bottom: 40px;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+        box-shadow: 0 10px 30px rgba(6, 147, 227, 0.3);
     }
     
     .page-header h1 {
@@ -71,12 +71,12 @@
     .filter-group input:focus,
     .filter-group select:focus {
         outline: none;
-        border-color: #7c3aed;
-        box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+        border-color: #0693E3;
+        box-shadow: 0 0 0 3px rgba(6, 147, 227, 0.1);
     }
     
     .btn-filter {
-        background: linear-gradient(135deg, #7c3aed 0%, #5b21b6 100%);
+        background: linear-gradient(135deg, #0693E3 0%, #1e3a5f 100%);
         color: white;
         padding: 12px 30px;
         border: none;
@@ -92,13 +92,13 @@
     
     .btn-filter:hover {
         transform: translateY(-2px);
-        box-shadow: 0 6px 20px rgba(124, 58, 237, 0.4);
+        box-shadow: 0 6px 20px rgba(6, 147, 227, 0.4);
     }
     
     .btn-reset {
         background: white;
-        color: #7c3aed;
-        border: 2px solid #7c3aed;
+        color: #0693E3;
+        border: 2px solid #0693E3;
         padding: 12px 30px;
         border-radius: 8px;
         font-size: 14px;
@@ -140,7 +140,7 @@
     .stat-value {
         font-size: 32px;
         font-weight: 700;
-        color: #7c3aed;
+        color: #0693E3;
         margin-bottom: 5px;
     }
     
@@ -181,14 +181,14 @@
         background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
         border-radius: 12px;
         padding: 25px;
-        border-left: 5px solid #7c3aed;
+        border-left: 5px solid #0693E3;
         box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         transition: all 0.3s ease;
     }
     
     .schedule-card:hover {
         transform: translateX(5px);
-        box-shadow: 0 4px 20px rgba(124, 58, 237, 0.15);
+        box-shadow: 0 4px 20px rgba(6, 147, 227, 0.15);
     }
     
     .schedule-header {
@@ -206,7 +206,7 @@
         gap: 10px;
         font-size: 20px;
         font-weight: 700;
-        color: #7c3aed;
+        color: #0693E3;
     }
     
     .status-badge {
@@ -240,7 +240,7 @@
     .detail-icon {
         width: 20px;
         height: 20px;
-        color: #7c3aed;
+        color: #0693E3;
         flex-shrink: 0;
         margin-top: 2px;
     }
@@ -262,11 +262,11 @@
     }
     
     .fcfs-metrics {
-        background: linear-gradient(135deg, #f3e7ff 0%, #e9d5ff 100%);
+        background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
         border-radius: 10px;
         padding: 15px;
         margin-top: 15px;
-        border: 2px solid #d8b4fe;
+        border: 2px solid #7dd3fc;
     }
     
     .fcfs-grid {
@@ -291,7 +291,7 @@
     .fcfs-value {
         font-size: 18px;
         font-weight: 700;
-        color: #7c3aed;
+        color: #0693E3;
     }
     
     .empty-state {
@@ -597,7 +597,7 @@
                                 }
                             @endphp
                             <div class="fcfs-metrics">
-                                <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
+                                <div style="font-size: 13px; font-weight: 600; color: #0693E3; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
                                     <svg width="16" height="16" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
                                         <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
