@@ -566,6 +566,35 @@
                                 
                                 $formattedWT = $formatTime($waitingTime);
                                 $formattedTAT = $formatTime($tat);
+                                
+                                // Hitung sisa waktu sampai tanggal reservasi
+                                $now = \Carbon\Carbon::now();
+                                $reservationDateTime = \Carbon\Carbon::parse($reservation->reservation_date);
+                                if ($reservation->visit_time) {
+                                    $reservationDateTime = \Carbon\Carbon::parse($reservation->reservation_date->format('Y-m-d') . ' ' . $reservation->visit_time);
+                                }
+                                
+                                $daysUntil = '';
+                                if ($reservationDateTime->isFuture()) {
+                                    $diffInDays = $now->diffInDays($reservationDateTime);
+                                    $diffInHours = $now->diffInHours($reservationDateTime) % 24;
+                                    
+                                    if ($diffInDays > 0) {
+                                        $daysUntil = $diffInDays . ' hari ' . ($diffInHours > 0 ? $diffInHours . ' jam lagi' : 'lagi');
+                                    } else {
+                                        $diffInHours = $now->diffInHours($reservationDateTime);
+                                        $diffInMins = $now->diffInMinutes($reservationDateTime) % 60;
+                                        if ($diffInHours > 0) {
+                                            $daysUntil = $diffInHours . ' jam ' . ($diffInMins > 0 ? $diffInMins . ' menit lagi' : 'lagi');
+                                        } else {
+                                            $daysUntil = $diffInMins . ' menit lagi';
+                                        }
+                                    }
+                                } elseif ($reservationDateTime->isToday()) {
+                                    $daysUntil = 'Hari ini';
+                                } else {
+                                    $daysUntil = 'Sudah lewat';
+                                }
                             @endphp
                             <div class="fcfs-metrics">
                                 <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
@@ -579,6 +608,10 @@
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Posisi #</div>
                                         <div class="fcfs-value">{{ $queuePosition ?: '-' }}</div>
+                                    </div>
+                                    <div class="fcfs-item">
+                                        <div class="fcfs-label">Countdown</div>
+                                        <div class="fcfs-value" style="font-size: 12px; color: {{ $reservationDateTime->isFuture() ? '#10b981' : '#6b7280' }};">{{ $daysUntil }}</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Waktu Tunggu</div>
