@@ -19,18 +19,11 @@ class QRCodeHelper
      */
     public static function generateReservationQR($reservation): string
     {
-        $verificationData = [
-            'id' => $reservation->id,
-            'name' => $reservation->full_name,
-            'date' => $reservation->reservation_date,
-            'time' => $reservation->visit_time,
-            'code' => $reservation->id . '-' . strtoupper(substr(md5($reservation->email ?? 'guest'), 0, 6)),
-            'verify_url' => url('/scan/verify/' . $reservation->id)
-        ];
+        // QR Code berisi URL verifikasi langsung
+        // Sehingga ketika di-scan dengan scanner HP apapun, langsung membuka halaman verifikasi
+        $verifyUrl = url('/scan/verify/' . $reservation->id);
         
-        $qrData = json_encode($verificationData);
-        
-        $qr = QrCode::create($qrData)
+        $qr = QrCode::create($verifyUrl)
             ->setEncoding(new Encoding('UTF-8'))
             ->setErrorCorrectionLevel(ErrorCorrectionLevel::High)
             ->setSize(300)
