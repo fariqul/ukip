@@ -11,13 +11,13 @@
     }
     
     .page-header {
-        background: linear-gradient(135deg, #0693E3 0%, #1e3a5f 100%);
+        background: #1e3a5f;
         color: white;
         padding: 50px 30px;
         border-radius: 20px;
         margin-bottom: 40px;
         text-align: center;
-        box-shadow: 0 10px 30px rgba(6, 147, 227, 0.3);
+        box-shadow: 0 10px 30px rgba(30, 58, 95, 0.3);
     }
     
     .page-header h1 {
