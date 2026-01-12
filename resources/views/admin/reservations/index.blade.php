@@ -43,6 +43,30 @@
                     </td>
                     <td class="px-3 py-2">
                         @if($r->start_time)
+                            @php
+                                // Format waktu ke jam/menit yang mudah dibaca
+                                $formatTime = function($minutes) {
+                                    if ($minutes == 0) return '0m';
+                                    if ($minutes < 60) return $minutes . 'm';
+                                    
+                                    $hours = floor($minutes / 60);
+                                    $mins = $minutes % 60;
+                                    
+                                    if ($hours >= 24) {
+                                        $days = floor($hours / 24);
+                                        $hours = $hours % 24;
+                                        if ($hours > 0) {
+                                            return $days . 'h ' . $hours . 'j ' . ($mins > 0 ? $mins . 'm' : '');
+                                        }
+                                        return $days . 'h ' . ($mins > 0 ? $mins . 'm' : '');
+                                    }
+                                    
+                                    return $hours . 'j ' . ($mins > 0 ? $mins . 'm' : '');
+                                };
+                                
+                                $formattedWT = $formatTime($r->waiting_time ?? 0);
+                                $formattedTAT = $formatTime($r->turnaround_time ?? 0);
+                            @endphp
                             <div class="text-xs space-y-1">
                                 <div class="flex items-center gap-1">
                                     <span class="font-semibold text-purple-600">🏁 Posisi:</span>
@@ -50,11 +74,11 @@
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <span class="font-semibold text-blue-600">⏱️ WT:</span>
-                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{{ $r->waiting_time ?? 0 }}m</span>
+                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{{ $formattedWT }}</span>
                                 </div>
                                 <div class="flex items-center gap-1">
                                     <span class="font-semibold text-green-600">📊 TAT:</span>
-                                    <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded">{{ $r->turnaround_time ?? 0 }}m</span>
+                                    <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded">{{ $formattedTAT }}</span>
                                 </div>
                                 <div class="text-gray-600 mt-1">
                                     <strong>Start:</strong> {{ \Carbon\Carbon::parse($r->start_time)->format('H:i') }}

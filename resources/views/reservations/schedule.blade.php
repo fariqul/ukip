@@ -543,6 +543,29 @@
                                     : ($reservation->visit_time 
                                         ? \Carbon\Carbon::parse($reservation->visit_time)->format('H:i') 
                                         : '-');
+                                
+                                // Format waktu ke jam/menit yang mudah dibaca
+                                $formatTime = function($minutes) {
+                                    if ($minutes == 0) return '0m';
+                                    if ($minutes < 60) return $minutes . 'm';
+                                    
+                                    $hours = floor($minutes / 60);
+                                    $mins = $minutes % 60;
+                                    
+                                    if ($hours >= 24) {
+                                        $days = floor($hours / 24);
+                                        $hours = $hours % 24;
+                                        if ($hours > 0) {
+                                            return $days . 'h ' . $hours . 'j ' . ($mins > 0 ? $mins . 'm' : '');
+                                        }
+                                        return $days . 'h ' . ($mins > 0 ? $mins . 'm' : '');
+                                    }
+                                    
+                                    return $hours . 'j ' . ($mins > 0 ? $mins . 'm' : '');
+                                };
+                                
+                                $formattedWT = $formatTime($waitingTime);
+                                $formattedTAT = $formatTime($tat);
                             @endphp
                             <div class="fcfs-metrics">
                                 <div style="font-size: 13px; font-weight: 600; color: #7c3aed; margin-bottom: 12px; display: flex; align-items: center; gap: 6px;">
@@ -559,11 +582,11 @@
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Waktu Tunggu</div>
-                                        <div class="fcfs-value">{{ $waitingTime }}m</div>
+                                        <div class="fcfs-value">{{ $formattedWT }}</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">TAT</div>
-                                        <div class="fcfs-value">{{ $tat }}m</div>
+                                        <div class="fcfs-value">{{ $formattedTAT }}</div>
                                     </div>
                                     <div class="fcfs-item">
                                         <div class="fcfs-label">Mulai Layanan</div>
