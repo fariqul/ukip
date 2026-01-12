@@ -576,14 +576,14 @@
                                 
                                 $daysUntil = '';
                                 if ($reservationDateTime->isFuture()) {
-                                    $diffInDays = $now->diffInDays($reservationDateTime);
-                                    $diffInHours = $now->diffInHours($reservationDateTime) % 24;
+                                    $diffInDays = (int) $now->diffInDays($reservationDateTime, false);
+                                    $diffInHours = (int) ($now->diffInHours($reservationDateTime, false) % 24);
                                     
                                     if ($diffInDays > 0) {
                                         $daysUntil = $diffInDays . ' hari ' . ($diffInHours > 0 ? $diffInHours . ' jam lagi' : 'lagi');
                                     } else {
-                                        $diffInHours = $now->diffInHours($reservationDateTime);
-                                        $diffInMins = $now->diffInMinutes($reservationDateTime) % 60;
+                                        $diffInHours = (int) $now->diffInHours($reservationDateTime, false);
+                                        $diffInMins = (int) ($now->diffInMinutes($reservationDateTime, false) % 60);
                                         if ($diffInHours > 0) {
                                             $daysUntil = $diffInHours . ' jam ' . ($diffInMins > 0 ? $diffInMins . ' menit lagi' : 'lagi');
                                         } else {
