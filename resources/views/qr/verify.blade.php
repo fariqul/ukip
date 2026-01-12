@@ -81,6 +81,33 @@
         background: #dc3545;
         color: white;
     }
+    .status-completed {
+        background: #3b82f6;
+        color: white;
+    }
+    .qr-code-section {
+        text-align: center;
+        background: #f8fafc;
+        padding: 25px;
+        border-radius: 12px;
+        margin: 25px 0;
+        border: 2px dashed #0693E3;
+    }
+    .qr-code-section h4 {
+        color: #0693E3;
+        margin-bottom: 15px;
+    }
+    .qr-code-section img {
+        max-width: 200px;
+        height: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+    }
+    .qr-code-section p {
+        color: #666;
+        font-size: 13px;
+        margin-top: 12px;
+    }
 </style>
 @endpush
 
@@ -165,7 +192,33 @@
             </div>
         </div>
 
+        <!-- QR Code Display -->
         @if($reservation->status === 'confirmed')
+            <div class="qr-code-section">
+                <h4>📱 QR Code Verifikasi</h4>
+                <img src="{{ \App\Helpers\QRCodeHelper::generateReservationQR($reservation) }}" alt="QR Code Reservasi #{{ $reservation->id }}">
+                <p>Tunjukkan QR Code ini saat kunjungan untuk verifikasi</p>
+                <p style="font-size: 11px; color: #999;">ID: {{ $reservation->id }}-{{ strtoupper(substr(md5($reservation->email ?? 'guest'), 0, 6)) }}</p>
+            </div>
+        @endif
+
+        @php
+            // Cek apakah reservasi sudah selesai
+            $isCompleted = false;
+            if ($reservation->status === 'confirmed' && $reservation->reservation_date && $reservation->end_time) {
+                $endDateTime = \Carbon\Carbon::parse($reservation->reservation_date->format('Y-m-d') . ' ' . $reservation->end_time);
+                $isCompleted = $endDateTime->isPast();
+            } elseif ($reservation->status === 'confirmed' && $reservation->reservation_date) {
+                $isCompleted = $reservation->reservation_date->endOfDay()->isPast();
+            }
+        @endphp
+
+        @if($reservation->status === 'confirmed' && $isCompleted)
+            <div style="background: #dbeafe; padding: 15px; border-radius: 8px; border-left: 4px solid #3b82f6; margin-top: 20px;">
+                <strong style="color: #1e40af;">✅ Reservasi telah selesai</strong>
+                <p style="margin: 5px 0 0 0; color: #1e40af; font-size: 14px;">Terima kasih telah menggunakan layanan kami</p>
+            </div>
+        @elseif($reservation->status === 'confirmed')
             <div style="background: #d4edda; padding: 15px; border-radius: 8px; border-left: 4px solid #28a745; margin-top: 20px;">
                 <strong style="color: #155724;">✓ Reservasi telah disetujui</strong>
                 <p style="margin: 5px 0 0 0; color: #155724; font-size: 14px;">Silakan melanjutkan dengan kunjungan sesuai jadwal</p>
