@@ -21,7 +21,7 @@ class QRCodeHelper
     {
         // QR Code berisi URL verifikasi langsung
         // Sehingga ketika di-scan dengan scanner HP apapun, langsung membuka halaman verifikasi
-        $verifyUrl = url('/scan/verify/' . $reservation->id);
+        $verifyUrl = route('qr.verify', $reservation->id);
         
         $qr = QrCode::create($verifyUrl)
             ->setEncoding(new Encoding('UTF-8'))
