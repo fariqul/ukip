@@ -67,20 +67,20 @@
                                 $formattedWT = $formatTime($r->waiting_time ?? 0);
                                 $formattedTAT = $formatTime($r->turnaround_time ?? 0);
                             @endphp
-                            <div class="text-xs space-y-1">
-                                <div class="flex items-center gap-1">
-                                    <span class="font-semibold text-purple-600">🏁 Posisi:</span>
-                                    <span class="bg-purple-100 text-purple-800 px-2 py-0.5 rounded font-bold">#{{ $r->queue_position ?? '-' }}</span>
+                            <div style="font-size: 11px; line-height: 1.6;">
+                                <div style="margin-bottom: 4px;">
+                                    <span style="color: #7c3aed; font-weight: 600;">Posisi:</span>
+                                    <span style="background: #f3e8ff; color: #6b21a8; padding: 2px 6px; border-radius: 4px; font-weight: 700;">#{{ $r->queue_position ?? '-' }}</span>
                                 </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="font-semibold text-blue-600">⏱️ WT:</span>
-                                    <span class="bg-blue-100 text-blue-800 px-2 py-0.5 rounded">{{ $formattedWT }}</span>
+                                <div style="margin-bottom: 4px;">
+                                    <span style="color: #2563eb; font-weight: 600;">WT:</span>
+                                    <span style="background: #dbeafe; color: #1e40af; padding: 2px 6px; border-radius: 4px;">{{ $formattedWT }}</span>
                                 </div>
-                                <div class="flex items-center gap-1">
-                                    <span class="font-semibold text-green-600">📊 TAT:</span>
-                                    <span class="bg-green-100 text-green-800 px-2 py-0.5 rounded">{{ $formattedTAT }}</span>
+                                <div style="margin-bottom: 4px;">
+                                    <span style="color: #16a34a; font-weight: 600;">TAT:</span>
+                                    <span style="background: #dcfce7; color: #166534; padding: 2px 6px; border-radius: 4px;">{{ $formattedTAT }}</span>
                                 </div>
-                                <div class="text-gray-600 mt-1">
+                                <div style="color: #4b5563; margin-top: 6px; padding-top: 4px; border-top: 1px solid #e5e7eb;">
                                     <strong>Start:</strong> {{ \Carbon\Carbon::parse($r->start_time)->format('H:i') }}
                                 </div>
                             </div>
