@@ -502,7 +502,7 @@
                 
                 <div class="card-actions">
                     @if($reservation->request_letter)
-                        <a href="{{ asset('uploads/' . $reservation->request_letter) }}" 
+                        <a href="{{ asset($reservation->request_letter) }}" 
                            target="_blank" 
                            class="btn btn-secondary">
                             <svg width="18" height="18" fill="none" stroke="currentColor" viewBox="0 0 24 24">
