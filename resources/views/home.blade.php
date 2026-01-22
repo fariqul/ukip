@@ -21,6 +21,13 @@
         border-radius: 12px;
         overflow: hidden;
         background: #1a1a2e;
+        display: block;
+        text-decoration: none;
+        color: inherit;
+    }
+    .main-news:hover {
+        transform: scale(1.01);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.3);
     }
     .main-news img {
         width: 100%;
@@ -55,13 +62,7 @@
         font-size: 1.6rem;
         margin-bottom: 10px;
         line-height: 1.3;
-    }
-    .main-news-overlay h2 a {
         color: white;
-        text-decoration: none;
-    }
-    .main-news-overlay h2 a:hover {
-        text-decoration: underline;
     }
     .news-meta {
         font-size: 0.85rem;
@@ -85,6 +86,8 @@
         overflow: hidden;
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
     }
     .side-news-item:hover {
         transform: translateX(5px);
@@ -112,13 +115,6 @@
         margin: 0;
         line-height: 1.4;
         color: #1f2937;
-    }
-    .side-news-content h4 a {
-        color: inherit;
-        text-decoration: none;
-    }
-    .side-news-content h4 a:hover {
-        color: #0693E3;
     }
     .side-news-date {
         font-size: 0.75rem;
@@ -183,6 +179,9 @@
         overflow: hidden;
         box-shadow: 0 2px 10px rgba(0,0,0,0.08);
         transition: all 0.3s ease;
+        display: block;
+        text-decoration: none;
+        color: inherit;
     }
     .news-card:hover {
         transform: translateY(-5px);
@@ -216,12 +215,7 @@
         color: #1f2937;
         line-height: 1.4;
     }
-    .news-card h3 a {
-        color: inherit;
-        text-decoration: none;
-    }
-    .news-card h3 a:hover {
-        color: #0693E3;
+    .news-card-meta {
     }
     .news-card-meta {
         display: flex;
@@ -448,7 +442,7 @@
     <div class="news-slider-container">
         <!-- Main Featured News -->
         @php $featuredNews = $latestNews->first(); @endphp
-        <div class="main-news">
+        <a href="{{ route('news.show', $featuredNews->slug) }}" class="main-news">
             @if($featuredNews->image)
                 <img src="{{ Storage::url($featuredNews->image) }}" alt="{{ $featuredNews->title }}">
             @else
@@ -458,19 +452,19 @@
             @endif
             <div class="main-news-overlay">
                 <span class="news-category-label">BERITA</span>
-                <h2><a href="{{ route('news.show', $featuredNews->slug) }}">{{ $featuredNews->title }}</a></h2>
+                <h2>{{ $featuredNews->title }}</h2>
                 <div class="news-meta">
                     <span>👤 {{ $featuredNews->author->name ?? 'Admin' }}</span>
                     <span>📅 {{ $featuredNews->published_at?->translatedFormat('d F Y') }}</span>
                 </div>
             </div>
-        </div>
+        </a>
         
         <!-- Side News List -->
         @if($latestNews->count() > 1)
         <div class="side-news">
             @foreach($latestNews->skip(1) as $sideNews)
-            <article class="side-news-item">
+            <a href="{{ route('news.show', $sideNews->slug) }}" class="side-news-item">
                 @if($sideNews->image)
                     <img src="{{ Storage::url($sideNews->image) }}" alt="{{ $sideNews->title }}">
                 @else
@@ -480,10 +474,10 @@
                 @endif
                 <div class="side-news-content">
                     <span class="news-category-label">BERITA</span>
-                    <h4><a href="{{ route('news.show', $sideNews->slug) }}">{{ Str::limit($sideNews->title, 60) }}</a></h4>
+                    <h4>{{ Str::limit($sideNews->title, 60) }}</h4>
                     <div class="side-news-date">{{ $sideNews->published_at?->translatedFormat('d F Y') }}</div>
                 </div>
-            </article>
+            </a>
             @endforeach
         </div>
         @endif
@@ -500,7 +494,7 @@
     </div>
     <div class="news-grid">
         @foreach($latestNews as $news)
-        <article class="news-card">
+        <a href="{{ route('news.show', $news->slug) }}" class="news-card">
             <div class="news-card-image">
                 @if($news->image)
                     <img src="{{ Storage::url($news->image) }}" alt="{{ $news->title }}">
@@ -512,13 +506,13 @@
                 <span class="news-category-label">BERITA</span>
             </div>
             <div class="news-card-content">
-                <h3><a href="{{ route('news.show', $news->slug) }}">{{ $news->title }}</a></h3>
+                <h3>{{ $news->title }}</h3>
                 <div class="news-card-meta">
                     <span>👤 {{ $news->author->name ?? 'Admin' }}</span>
                     <span>📅 {{ $news->published_at?->translatedFormat('d M Y') }}</span>
                 </div>
             </div>
-        </article>
+        </a>
         @endforeach
     </div>
 </section>
