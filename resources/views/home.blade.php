@@ -554,7 +554,6 @@
     </div>
 </section>
 @endif
-@endif
 
 <!-- Rekomendasi Buku Section -->
 <section>
