@@ -108,7 +108,16 @@
             box-shadow: 0 4px 20px rgba(0,0,0,0.15);
             z-index: 1000;
             overflow: hidden;
-            margin-top: 5px;
+            padding-top: 10px;
+        }
+        .nav-dropdown-content::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 10px;
+            background: transparent;
         }
         .nav-dropdown:hover .nav-dropdown-content {
             display: block;
@@ -119,6 +128,7 @@
             display: block;
             border-radius: 0 !important;
             font-size: 14px;
+            background: white;
         }
         .nav-dropdown-content a:hover {
             background: #f3f4f6 !important;
