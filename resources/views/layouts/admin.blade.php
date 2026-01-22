@@ -84,11 +84,6 @@
             gap: 12px;
         }
 
-        .main-content h1::before {
-            content: "📅";
-            font-size: 36px;
-        }
-
         .main-content p {
             margin-bottom: 20px;
             color: #4a5568;
