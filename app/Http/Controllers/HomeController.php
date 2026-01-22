@@ -12,11 +12,11 @@ class HomeController extends Controller
     {
         $books = Book::orderBy('created_at', 'desc')->limit(12)->get();
         
-        // Get latest news (berita) - max 3
+        // Get latest news (berita) - max 4 (1 featured + 3 side news)
         $latestNews = News::published()
             ->berita()
             ->latest('published_at')
-            ->limit(3)
+            ->limit(4)
             ->get();
         
         // Get upcoming agenda - max 3
