@@ -77,6 +77,53 @@
         .nav-menu a:hover {
             background: rgba(255,255,255,0.2);
         }
+        /* Dropdown Menu */
+        .nav-dropdown {
+            position: relative;
+        }
+        .nav-dropdown-toggle {
+            color: white;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .nav-dropdown-toggle:hover {
+            background: rgba(255,255,255,0.2);
+        }
+        .nav-dropdown-content {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background: white;
+            min-width: 180px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+            z-index: 1000;
+            overflow: hidden;
+            margin-top: 5px;
+        }
+        .nav-dropdown:hover .nav-dropdown-content {
+            display: block;
+        }
+        .nav-dropdown-content a {
+            color: #333 !important;
+            padding: 12px 15px !important;
+            display: block;
+            border-radius: 0 !important;
+            font-size: 14px;
+        }
+        .nav-dropdown-content a:hover {
+            background: #f3f4f6 !important;
+            color: #0693E3 !important;
+        }
         .log-button, .reg-button {
             padding: 8px 20px;
             border-radius: 20px;
@@ -138,6 +185,14 @@
         </div>
         <div class="header-links">
             <div class="nav-menu">
+                <!-- Dropdown Aktivitas -->
+                <div class="nav-dropdown">
+                    <span class="nav-dropdown-toggle">📢 Aktivitas ▾</span>
+                    <div class="nav-dropdown-content">
+                        <a href="{{ route('news.index') }}">📰 Berita</a>
+                        <a href="{{ route('news.agenda') }}">📅 Agenda</a>
+                    </div>
+                </div>
                 <a href="{{ route('books.index') }}">📚 Katalog Buku</a>
                 <a href="{{ route('reservations.schedule') }}">📅 Lihat Jadwal</a>
                 <a href="{{ route('reservations.create') }}">📝 Reservasi</a>

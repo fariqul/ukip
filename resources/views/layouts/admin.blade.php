@@ -494,6 +494,7 @@
         <ul>
             <li><a href="{{ route('dashboard') }}">🏠 Dashboard</a></li>
             <li><a href="{{ route('admin.books.index') }}">📚 Kelola Buku</a></li>
+            <li><a href="{{ route('admin.news.index') }}">📰 Kelola Berita</a></li>
             <li><a href="{{ route('admin.users.index') }}">👥 Kelola Pengguna</a></li>
             <li><a href="{{ route('admin.reservations.index') }}">🗂 Kelola Reservasi</a></li>
             <li><a href="{{ route('qr.scan') }}">🔍 Scan QR Code</a></li>

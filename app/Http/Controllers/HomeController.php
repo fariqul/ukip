@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\News;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -11,6 +12,21 @@ class HomeController extends Controller
     {
         $books = Book::orderBy('created_at', 'desc')->limit(12)->get();
         
-        return view('home', compact('books'));
+        // Get latest news (berita) - max 3
+        $latestNews = News::published()
+            ->berita()
+            ->latest('published_at')
+            ->limit(3)
+            ->get();
+        
+        // Get upcoming agenda - max 3
+        $upcomingAgenda = News::published()
+            ->agenda()
+            ->where('event_date', '>=', now()->toDateString())
+            ->orderBy('event_date', 'asc')
+            ->limit(3)
+            ->get();
+        
+        return view('home', compact('books', 'latestNews', 'upcomingAgenda'));
     }
 }

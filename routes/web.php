@@ -14,6 +14,8 @@ use App\Http\Controllers\Admin\UserController as AdminUserController;
 use App\Http\Controllers\ScheduleController;
 use App\Http\Controllers\Admin\ScheduleController as AdminScheduleController;
 use App\Http\Controllers\BusTrackingController;
+use App\Http\Controllers\NewsController;
+use App\Http\Controllers\Admin\NewsController as AdminNewsController;
 use Illuminate\Support\Facades\Route;
 
 // Public routes
@@ -46,6 +48,11 @@ Route::get('/schedule', [ScheduleController::class, 'index'])->name('schedule.in
 // Bus Tracking
 Route::get('/bus-tracking', [BusTrackingController::class, 'index'])->name('bus.tracking');
 Route::get('/api/bus-tracking/status', [BusTrackingController::class, 'getCurrentStatus'])->name('bus.tracking.status');
+
+// News & Agenda (Aktivitas)
+Route::get('/berita', [NewsController::class, 'index'])->name('news.index');
+Route::get('/agenda', [NewsController::class, 'agenda'])->name('news.agenda');
+Route::get('/berita/{slug}', [NewsController::class, 'show'])->name('news.show');
 
 // Static pages
 Route::get('/e-resources', [\App\Http\Controllers\StaticPageController::class, 'eResources'])->name('static.eresources');
@@ -84,6 +91,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Bus Tracking Admin
     Route::get('bus-tracking', [BusTrackingController::class, 'adminControl'])->name('bus.control');
     Route::post('bus-tracking/update', [BusTrackingController::class, 'updateStatus'])->name('bus.updateStatus');
+    
+    // News Admin
+    Route::resource('news', AdminNewsController::class);
 });
 
 require __DIR__.'/auth.php';
