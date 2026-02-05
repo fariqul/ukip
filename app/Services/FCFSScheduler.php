@@ -92,7 +92,7 @@ class FCFSScheduler
      * Calculate FCFS times for a reservation
      * 
      * @param Reservation $reservation
-     * @param Carbon|null $previousCompletionTime
+     * @param Carbon|null $previousCompletionTime (kept for backwards compatibility, but no longer used for sequential chaining)
      * @return void
      */
     public function calculateTimes(Reservation $reservation, $previousCompletionTime = null)
@@ -121,19 +121,48 @@ class FCFSScheduler
         }
         
         // ST = Start Time
-        // Formula: ST = max(AT, previous CT, RT if available and not conflicting)
-        $startTime = $arrivalTime->copy();
-        
-        if ($previousCompletionTime) {
-            $previousCT = Carbon::parse($previousCompletionTime);
-            if ($previousCT->gt($startTime)) {
-                $startTime = $previousCT->copy();
-            }
-        }
-        
-        // If requested time is available and after calculated start time, use it
-        if ($requestedTime && $requestedTime->gt($startTime)) {
+        // FIX: Check if requested time slot actually conflicts with other reservations
+        // Only adjust start time if there's a real overlap, not just based on FCFS queue order
+        if ($requestedTime) {
+            // Start with the user's requested time
             $startTime = $requestedTime->copy();
+            
+            // Check for actual conflicts with other confirmed reservations on the same date
+            $conflictingReservations = Reservation::where('reservation_date', $reservation->reservation_date)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->where('id', '!=', $reservation->id)
+                ->whereNotNull('start_time')
+                ->whereNotNull('completion_time')
+                ->get();
+            
+            $proposedEnd = $startTime->copy()->addMinutes($burstTime);
+            $hasConflict = true;
+            $maxIterations = 20;
+            $iteration = 0;
+            
+            while ($hasConflict && $iteration < $maxIterations) {
+                $hasConflict = false;
+                
+                foreach ($conflictingReservations as $existing) {
+                    $existingStart = Carbon::parse($existing->start_time);
+                    $existingEnd = Carbon::parse($existing->completion_time);
+                    
+                    // Check if time slots overlap
+                    if ($startTime->lt($existingEnd) && $proposedEnd->gt($existingStart)) {
+                        // Conflict found - move to after this reservation
+                        $startTime = $existingEnd->copy();
+                        $proposedEnd = $startTime->copy()->addMinutes($burstTime);
+                        $hasConflict = true;
+                        Log::info("Conflict detected for reservation #{$reservation->id}, moving start time to {$startTime}");
+                        break;
+                    }
+                }
+                
+                $iteration++;
+            }
+        } else {
+            // No requested time, use arrival time as fallback
+            $startTime = $arrivalTime->copy();
         }
         
         // CT = Completion Time
